@@ -1,0 +1,106 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Quiz with radio buttons</title>
+    <style>
+      label{ display: block; }
+      input[type=submit]{ margin-top: 15px; }
+      #score{
+        padding: 5px;
+        margin: 15px 0 0 0;
+      }
+    </style>
+  </head>
+
+  <body>
+    <form> 
+      <div class="question">
+        <p><strong>Q1</strong>: Mary is English. She was born in London</p>
+
+        <label><input type="radio" name="one" value="a">Mary was born in England</label>
+        <label><input type="radio" name="one" value="b">Mary, who is English, was born in London</label>
+        <label><input type="radio" name="one" value="c">English Mary was born in London</label>
+        <label><input type="radio" name="one" value="d">London Mary is English born</label>
+      </div>
+
+      <div class="question"> 
+        <p><strong>Q2</strong>: Mary is English. She was born in London</p>
+
+        <label><input type="radio" name="two" value="a">Mary was born in England</label>
+        <label><input type="radio" name="two" value="b">Mary, who is English, was born in London</label>
+        <label><input type="radio" name="two" value="c">English Mary was born in London</label>
+        <label><input type="radio" name="two" value="d">London Mary is English born</label>
+      </div>
+
+      <input type="submit" />
+      <input type="reset" value="Start again" /> 
+    </form>
+
+    <div id="score"></div>
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>
+      function clearAnswerImages(){
+        $("img").each(function(){
+          $(this).remove();
+        })
+      }
+
+      function mark(el, status){
+        var images = {
+          correct: "http://www.littletherese.com/tick.jpg",
+          incorrect: "http://www.littletherese.com/x.jpg",
+          unanswered: "http://assets.altperks.com/shared/images/clickable/questionmark-15x15.gif",
+        }, 
+        img = new Image();
+        img.src = images[status];
+        img.className = status;
+        el.append(img);
+      }
+
+      function displayScore(){
+        var numQuestions = $(".question").length,
+            questionsCorrect = $("img.correct").length;
+
+        $("#score").html("You got " + questionsCorrect + " out of " + numQuestions)
+      }
+
+      $("form").on("submit", function(e){
+        e.preventDefault();
+        clearAnswerImages();
+
+        $questions = $(".question");
+        $questions.each(function(){
+          var answer = $(this).find("input:checked"),
+              key = answer.attr("name"),
+              val = answer.attr("value");
+
+          if(answer.length === 0){ 
+            mark($(this).find("p"), "unanswered");
+          } else if (answers[key] !== val){
+            mark(answer.parent(), "incorrect");   // I  changed this line
+          } else {
+            mark(answer.parent(), "correct");
+          } 
+        });
+
+        displayScore()
+      });
+
+      $("input[type=reset]").on("click", function(){
+        $("input:checked").each(function(){
+          $(this).prop("checked", false);
+        });
+
+        clearAnswerImages();
+      });
+
+      var answers = {
+        "one": "b",
+        "two": "b"
+      }
+    </script>
+    https://images.unsplash.com/photo-1510276113764-7ac28415a9ec?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&w=1000&q=
+  </body>
+</html>
